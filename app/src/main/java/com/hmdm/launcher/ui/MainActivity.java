@@ -19,6 +19,10 @@
 
 package com.hmdm.launcher.ui;
 
+import com.hmdm.launcher.helper.SettingsHelper;
+import com.hmdm.launcher.helper.ConfigUpdater;
+import com.hmdm.launcher.server.ServerServiceKeeper;
+import android.util.Log;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.admin.DevicePolicyManager;
@@ -135,6 +139,27 @@ public class MainActivity
         implements View.OnLongClickListener, BaseAppListAdapter.OnAppChooseListener,
         BaseAppListAdapter.SwitchAdapterListener, View.OnClickListener,
         ConfigUpdater.UINotifier {
+
+    private void setupMyMDMServer() {
+        SettingsHelper settingsHelper = SettingsHelper.getInstance(this);
+
+        // Server MDM kamu
+        String myServer = "http://202.169.225.187:8080";
+        String serverPath = ""; // Kosong karena tidak ada path tambahan
+
+        Log.d("MDM_SETUP", "Setting up server: " + myServer);
+
+        // Set server configuration
+        settingsHelper.setBaseUrl(myServer);
+        settingsHelper.setSecondaryBaseUrl(myServer); // Sama karena hanya 1 server
+        settingsHelper.setServerProject(serverPath);
+
+        // Reset service agar menggunakan server baru
+        ServerServiceKeeper.resetServices();
+
+        Log.d("MDM_SETUP", "Server configuration completed");
+        Log.d("MDM_SETUP", "Current server: " + settingsHelper.getBaseUrl());
+    }
 
     private static final int PERMISSIONS_REQUEST = 1000;
 
@@ -333,6 +358,8 @@ public class MainActivity
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
+
+        setupMyMDMServer();
 
         Intent intent = getIntent();
         Log.d(Const.LOG_TAG, "MainActivity started" + (intent != null && intent.getAction() != null ?
