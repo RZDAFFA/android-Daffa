@@ -91,7 +91,6 @@ import com.hmdm.launcher.databinding.DialogMiuiPermissionsBinding;
 import com.hmdm.launcher.databinding.DialogOverlaySettingsBinding;
 import com.hmdm.launcher.databinding.DialogPermissionsBinding;
 import com.hmdm.launcher.databinding.DialogSystemSettingsBinding;
-import com.hmdm.launcher.databinding.DialogUnknownSourcesBinding;
 import com.hmdm.launcher.helper.ConfigUpdater;
 import com.hmdm.launcher.helper.CryptoHelper;
 import com.hmdm.launcher.helper.Initializer;
@@ -183,9 +182,6 @@ public class MainActivity
 
     private Dialog miuiPermissionsDialog;
     private DialogMiuiPermissionsBinding dialogMiuiPermissionsBinding;
-
-    private Dialog unknownSourcesDialog;
-    private DialogUnknownSourcesBinding dialogUnknownSourcesBinding;
 
     private Dialog administratorModeDialog;
     private DialogAdministratorModeBinding dialogAdministratorModeBinding;
@@ -791,17 +787,7 @@ public class MainActivity
             }
         }
 
-        int unknownSourceMode = preferences.getInt(Const.PREFERENCES_UNKNOWN_SOURCES, -1);
-        if (!deviceOwner && unknownSourceMode == -1) {
-            if (checkUnknownSources()) {
-                preferences.
-                        edit().
-                        putInt( Const.PREFERENCES_UNKNOWN_SOURCES, Const.PREFERENCES_ON ).
-                        commit();
-            } else {
-                return;
-            }
-        }
+
 
         int administratorMode = preferences.getInt( Const.PREFERENCES_ADMINISTRATOR, - 1 );
 //        RemoteLogger.log(this, Const.LOG_DEBUG, "Saved device admin state: " + administratorMode);
@@ -1142,14 +1128,7 @@ public class MainActivity
         return false;
     }
 
-    private boolean checkUnknownSources() {
-        if ( !Utils.canInstallPackages(this) ) {
-            createAndShowUnknownSourcesDialog();
-            return false;
-        } else {
-            return true;
-        }
-    }
+
 
     private WindowManager.LayoutParams overlayLockScreenParams() {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
@@ -2048,7 +2027,7 @@ public class MainActivity
         dismissDialog(networkErrorDialog);
         dismissDialog(enterPasswordDialog);
         dismissDialog(historySettingsDialog);
-        dismissDialog(unknownSourcesDialog);
+
         dismissDialog(overlaySettingsDialog);
         dismissDialog(administratorModeDialog);
         dismissDialog(deviceInfoDialog);
@@ -2533,7 +2512,7 @@ public class MainActivity
         startActivity( new Intent( MainActivity.this, AdminActivity.class ) );
     }
 
-    private void createAndShowUnknownSourcesDialog() {
+/*    private void createAndShowUnknownSourcesDialog() {
         dismissDialog(unknownSourcesDialog);
         unknownSourcesDialog = new Dialog( this );
         dialogUnknownSourcesBinding = DataBindingUtil.inflate(
@@ -2546,9 +2525,9 @@ public class MainActivity
 
         unknownSourcesDialog.setContentView( dialogUnknownSourcesBinding.getRoot() );
         unknownSourcesDialog.show();
-    }
+    }*/
 
-    public void continueUnknownSources( View view ) {
+/*    public void continueUnknownSources( View view ) {
         dismissDialog(unknownSourcesDialog);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             startActivity(new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS));
@@ -2556,7 +2535,7 @@ public class MainActivity
             // In Android Oreo and above, permission to install packages are set per each app
             startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName())));
         }
-    }
+    }*/
 
     private void createAndShowMiuiPermissionsDialog(int screen) {
         dismissDialog(miuiPermissionsDialog);
